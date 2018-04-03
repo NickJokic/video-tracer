@@ -1,6 +1,6 @@
 # video-tracer
 
-> An electron-vue project
+> Create vector-styled videos! Built with Electron-Vue. 
 
 #### Build Setup
 
