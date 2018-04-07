@@ -34,23 +34,18 @@ export const VideoProcessingMixin = {
       outputFilepath: "",
       outputFrameRate: 0,
       isPortraitMode: false,
-      inputResolution: ""
+      inputResolution: "",
+      inputNumOfStreams: 0
     }
   },
-  mounted() {
+  async mounted() {
 
     this.setFfmpegBinariesPath();
 
     ipcRenderer.on('bgProcessStoreUpdate', (info) => {
       this.retrieveStoredProperties();
 
-      ffmpeg.ffprobe(this.srcFilepath, (err, metadata) => {
-        /* Read input video's framerate*/
-        this.outputFrameRate = metadata["streams"][0]["height"] == undefined ? parseFloat(eval(metadata["streams"][1]["avg_frame_rate"])) : parseFloat(eval(metadata["streams"][0]["avg_frame_rate"]));
-      });
-
-      this.checkOrientation();
-      /* Send approval to background process to begin rendering */
+      /* Send approval to background worker to start rendering */
       this.mainWindow = BrowserWindow.getAllWindows()[1];
       remote.getCurrentWindow().webContents.send('approveBgRender')
     });
@@ -94,7 +89,13 @@ export const VideoProcessingMixin = {
             return;
           }
 
-          for (let i = 0; i < metadata["streams"].length; i++) {
+          this.inputNumOfStreams = metadata["streams"].length;
+
+          /* Read input video's framerate */
+          this.outputFrameRate = metadata["streams"][0]["height"] == undefined ? parseFloat(eval(metadata["streams"][1]["avg_frame_rate"])) : parseFloat(eval(metadata["streams"][0]["avg_frame_rate"]));
+
+          /* Read input video's resolution and check if portrait mode is used */
+          for (let i = 0; i < this.inputNumOfStreams; i++) {
             /* Check portrait mode and aspect ratio */
             if (metadata["streams"][i]["rotation"] !== undefined || (metadata["streams"][i]["height"] > metadata["streams"][i]["width"])) {
               this.inputResolution = metadata["streams"][i]["width"] + "x" + metadata["streams"][i]["height"];
@@ -142,14 +143,21 @@ export const VideoProcessingMixin = {
       this.ipcProgressUpdate('progress', "Extracting audio");
 
       return new Promise((resolve, reject) => {
-        command.on('end', () => {
+
+        if (this.inputNumOfStreams > 1) {
+          command.on('end', () => {
+            this.ipcProgressUpdate('audioProgress', 100);
+            resolve();
+          }).on('progress', (progress) => {
+            this.ipcProgressUpdate('audioProgress', progress.percent.toFixed(2));
+          }).on('error', (err) => {
+            reject(err);
+          }).input(inputPath).noVideo().audioCodec('libmp3lame').audioBitrate(320).output(outputPath + "/audioSrc.mp3").fps(this.outputFrameRate).run();
+        } else {
           this.ipcProgressUpdate('audioProgress', 100);
           resolve();
-        }).on('progress', (progress) => {
-          this.ipcProgressUpdate('audioProgress', progress.percent.toFixed(2));
-        }).on('error', (err) => {
-          reject(err);
-        }).input(inputPath).noVideo().audioCodec('libmp3lame').audioBitrate(320).output(outputPath + "/audioSrc.mp3").fps(this.outputFrameRate).run();
+        }
+
       });
     },
     potraceImage: function (inputPath, outputPath, outputName) {
@@ -189,7 +197,6 @@ export const VideoProcessingMixin = {
       })
     },
     potraceSrcFramesPromise: async function (rawPngDir, outputDir) {
-
       let progressCounter = 0;
       let progressPercentage = 0;
       let tmpOutputName = "";
@@ -198,7 +205,7 @@ export const VideoProcessingMixin = {
       /* Send progress update to the UI */
       this.ipcProgressUpdate('progress', "Tracing video");
 
-      await Promise.map(filenames, async(tmpFrame, index) => {
+      await Promise.map(filenames, async (tmpFrame, index) => {
         tmpOutputName = 'out' + (('00000' + (index + 1)).slice(-5)) + ".svg";
         await this.potraceImage(rawPngDir + "/" + tmpFrame, outputDir, tmpOutputName);
         progressCounter++;
@@ -229,7 +236,7 @@ export const VideoProcessingMixin = {
       this.ipcProgressUpdate('progress', "Converting frames");
       let tmpOutputName = "";
 
-      await Promise.map(filenames, async(tmpFrame, index) => {
+      await Promise.map(filenames, async (tmpFrame, index) => {
         tmpOutputName = 'out' + (('00000' + (index + 1)).slice(-5)) + ".png";
         await this.svgToPngImage(svgDir + "/" + tmpFrame, outWidth, outHeight, outputDir, tmpOutputName);
 
@@ -272,15 +279,26 @@ export const VideoProcessingMixin = {
         this.ipcProgressUpdate('progress', "Exporting video");
         let command = ffmpeg();
 
-        command.on('progress', (progress) => {
-          this.ipcProgressUpdate('export-progress', progress.percent.toFixed(2));
-        }).on('end', () => {
-          this.ipcProgressUpdate('export-progress', 100);
-          resolve();
-        }).on('error', (err) => {
-          reject("Error while rendering!\n" + err.toString());
-        }).addInput(inputPngDir + "/out%05d.png").withInputFps(this.outputFrameRate).addInput(this.extractedAudioPath + "/audioSrc.mp3").output(outputFilePath).withOutputFps(this.outputFrameRate).videoCodec('libx264').outputOptions(['-pix_fmt yuv420p']).videoBitrate('10000k').format(this.outputFormat).run();
-
+        /* Check if input video had audio stream */
+        if (this.inputNumOfStreams > 1) {
+          command.on('progress', (progress) => {
+            this.ipcProgressUpdate('export-progress', progress.percent.toFixed(2));
+          }).on('end', () => {
+            this.ipcProgressUpdate('export-progress', 100);
+            resolve();
+          }).on('error', (err) => {
+            reject("Error while rendering!\n" + err.toString());
+          }).addInput(inputPngDir + "/out%05d.png").withInputFps(this.outputFrameRate).addInput(this.extractedAudioPath + "/audioSrc.mp3").output(outputFilePath).withOutputFps(this.outputFrameRate).videoCodec('libx264').outputOptions(['-pix_fmt yuv420p']).videoBitrate('10000k').format(this.outputFormat).run();
+        } else {
+          command.on('progress', (progress) => {
+            this.ipcProgressUpdate('export-progress', progress.percent.toFixed(2));
+          }).on('end', () => {
+            this.ipcProgressUpdate('export-progress', 100);
+            resolve();
+          }).on('error', (err) => {
+            reject("Error while rendering!\n" + err.toString());
+          }).addInput(inputPngDir + "/out%05d.png").withInputFps(this.outputFrameRate).output(outputFilePath).withOutputFps(this.outputFrameRate).videoCodec('libx264').outputOptions(['-pix_fmt yuv420p']).videoBitrate('10000k').format(this.outputFormat).run();
+        }
       })
     },
     /* 

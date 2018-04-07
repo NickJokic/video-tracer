@@ -14,7 +14,6 @@
 <script>
   const shell = require('electron').shell;
 
-
   export default {
     name: 'about',
     data() {
@@ -48,7 +47,7 @@
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 5% 90% 5%;
   }
-  
+
   .content {
     grid-row-start: 2;
     grid-row-end: 2;
@@ -56,7 +55,7 @@
     grid-column-end: 2;
     font-size: 1.6em;
   }
-  
+
   @keyframes fadeColor {
     0% {
       color: rgba(63, 201, 63, 0.7);
@@ -68,12 +67,12 @@
       color: rgba(63, 201, 63, 0.7);
     }
   }
-  
+
   .youMakeMeGreen {
     color: #3fc93f;
     animation: fadeColor 1.5s infinite ease-in;
   }
-  
+
   .web-link {
     cursor: pointer;
   }

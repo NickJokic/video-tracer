@@ -131,7 +131,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
           webPreferences: {
             webSecurity: true
           },
-          show: false
+          show: true
         })
 
         backgroundWin.on('close', function() {
@@ -149,7 +149,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
           await this.saveFileDialog();
           this.createBackgroundWindowRenderer();
         } catch (err) {
-          console.err(err);
+          console.error(err);
         }
       },
       saveFileDialog: function() {
@@ -206,16 +206,16 @@ and navigates to "VideoRenderer.vue" which shows the progress.
 
 <style scoped>
   /* RANGE SLIDER STYLE */
-  
+
   input[type=range] {
     -webkit-appearance: none;
     width: 100%;
   }
-  
+
   input[type=range]:focus {
     outline: none;
   }
-  
+
   input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
     height: 6px;
@@ -225,7 +225,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     border-radius: 0px;
     border: 0px solid #010101;
   }
-  
+
   input[type=range]::-webkit-slider-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 2.9px solid #000000;
@@ -237,11 +237,11 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     -webkit-appearance: none;
     margin-top: -2px;
   }
-  
+
   input[type=range]:focus::-webkit-slider-runnable-track {
     background: #000000;
   }
-  
+
   input[type=range]::-moz-range-track {
     width: 100%;
     height: 6px;
@@ -251,7 +251,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     border-radius: 0px;
     border: 0px solid #010101;
   }
-  
+
   input[type=range]::-moz-range-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 2.9px solid #000000;
@@ -261,7 +261,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     background: #ffffff;
     cursor: pointer;
   }
-  
+
   input[type=range]::-ms-track {
     width: 100%;
     height: 6px;
@@ -270,21 +270,21 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     border-color: transparent;
     color: transparent;
   }
-  
+
   input[type=range]::-ms-fill-lower {
     background: #000000;
     border: 0px solid #010101;
     border-radius: 0px;
     box-shadow: 0px 0px 0.5px #000000, 0px 0px 0px #0d0d0d;
   }
-  
+
   input[type=range]::-ms-fill-upper {
     background: #000000;
     border: 0px solid #010101;
     border-radius: 0px;
     box-shadow: 0px 0px 0.5px #000000, 0px 0px 0px #0d0d0d;
   }
-  
+
   input[type=range]::-ms-thumb {
     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
     border: 2.9px solid #000000;
@@ -295,15 +295,15 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     cursor: pointer;
     height: 6px;
   }
-  
+
   input[type=range]:focus::-ms-fill-lower {
     background: #000000;
   }
-  
+
   input[type=range]:focus::-ms-fill-upper {
     background: #000000;
   }
-  
+
   .container {
     width: 100%;
     height: 100%;
@@ -315,7 +315,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     align-items: center;
     grid-row-gap: 1rem;
   }
-  
+
   .preview-placeholder {
     grid-row-start: 2;
     grid-row-end: 2;
@@ -326,12 +326,12 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     width: 100%;
     height: 100%;
   }
-  
+
   #preview-screenshot {
     width: 100%;
     height: 100%;
   }
-  
+
   .heading {
     grid-row-start: 1;
     grid-row-end: 1;
@@ -339,7 +339,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     grid-column-end: 4;
     color: #fff;
   }
-  
+
   .previous {
     color: #ffffff;
     background: none;
@@ -351,12 +351,12 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     text-decoration: none;
     transition: 0.4s all;
   }
-  
+
   .previous:hover {
     cursor: pointer;
     color: #f9bd2e;
   }
-  
+
   .detail-control {
     grid-row-start: 3;
     grid-row-end: 3;
@@ -366,14 +366,14 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     height: 100%;
     -webkit-app-region: no-drag;
   }
-  
+
   #detail-slider {
     width: 150px;
     padding: 0;
     margin: auto;
     margin-top: 6px;
   }
-  
+
   .color-control {
     grid-row-start: 3;
     grid-row-end: 3;
@@ -383,16 +383,16 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     width: 100%;
     height: 75px;
   }
-  
+
   .fg-control {
     height: 25px;
   }
-  
+
   .fg-control>p {
     display: inline-block;
     vertical-align: middle;
   }
-  
+
   input[type="color"] {
     -webkit-appearance: none;
     border: solid 1px #eee;
@@ -408,19 +408,19 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     right: 20px;
     -webkit-app-region: no-drag;
   }
-  
+
   input[type="color"]:hover {
     cursor: pointer;
   }
-  
+
   input[type="color"]::-webkit-color-swatch-wrapper {
     padding: 0;
   }
-  
+
   input[type="color"]::-webkit-color-swatch {
     border: none;
   }
-  
+
   #convert-button {
     width: 150px;
     height: 50px;
@@ -433,12 +433,12 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     box-shadow: 6px 6px 10px 0px rgba(0, 0, 0, 0.75);
     transition: 0.4s all;
   }
-  
+
   #convert-button:hover {
     background: #3fc93f;
     cursor: pointer;
   }
-  
+
   .button-holder {
     grid-row-start: 5;
     grid-row-end: 5;
@@ -448,7 +448,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     height: 100%;
     -webkit-app-region: no-drag;
   }
-  
+
   .resolution-control {
     grid-row-start: 4;
     grid-row-end: 4;
@@ -458,7 +458,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     height: 100%;
     -webkit-app-region: no-drag;
   }
-  
+
   .format-control {
     grid-row-start: 4;
     grid-row-end: 4;
@@ -468,7 +468,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     height: 100%;
     -webkit-app-region: no-drag;
   }
-  
+
   select {
     width: 150px;
     color: #fff;
@@ -478,18 +478,18 @@ and navigates to "VideoRenderer.vue" which shows the progress.
     height: 30px;
     font-size: 14px;
   }
-  
+
   select,
   option {
     text-align-last: center;
   }
-  
+
   h1,
   h2,
   p {
     margin: 0;
   }
-  
+
   p {
     font-size: 35px;
   }

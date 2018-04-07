@@ -31,7 +31,7 @@ It is called from VideoSettings.vue.
     mixins: [FileHandlerMixin, VideoProcessingMixin],
     mounted: async function() {
 
-      ipcRenderer.on('process-vid-in-background', async(info, filePathStore, vidPropsStore, fromWindowID) => {
+      ipcRenderer.on('process-vid-in-background', async (info, filePathStore, vidPropsStore, fromWindowID) => {
         this.duplicateStoreFromMainWindow(filePathStore, vidPropsStore)
         this.fpStore = filePathStore;
         this.vpStore = vidPropsStore;
@@ -48,6 +48,7 @@ It is called from VideoSettings.vue.
     methods: {
       startBgRender: async function() {
         try {
+          await this.checkOrientation();
           await this.extractAudioSrc(this.fpStore.filePath, this.fpStore.audioExtractedFolder);
           await this.convertVideoToFrames(this.fpStore.filePath, this.fpStore.rawPngFolder);
           await this.potraceSrcFramesPromise(this.fpStore.rawPngFolder, this.fpStore.rawSvgFolder);
@@ -56,7 +57,7 @@ It is called from VideoSettings.vue.
           remote.getCurrentWindow().close();
         } catch (err) {
           /* TODO: error handling */
-          console.err(err);
+          console.error(err);
         }
       },
       duplicateStoreFromMainWindow: function(fpStore, vpStore) {
