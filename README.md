@@ -8,7 +8,7 @@ Video Tracer - electron-vue desktop app, which traces input videos and creates v
 
 
 ## Features
-+ converts regular video into a vector-styled video
++ converts input video into a vector-styled video
 + users can adjust: colors, threshold (detail), output format & resolution
 
 ## Getting Started
@@ -25,7 +25,7 @@ Before you run the app in development, be sure you have these downloaded/install
 
 
 ### Cairo & Pango installation
-#### **Mac Os X:**
+#### **Mac Os X**
 
 Homebrew:
 ```
@@ -37,7 +37,8 @@ MacPorts:
 port install pkgconfig cairo pango libpng jpeg giflib
 ```
 
-#### **Linux:**
+#### **Linux**
+
 Ubuntu:
 ```
 sudo apt-get install libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
@@ -51,7 +52,7 @@ sudo yum install cairo cairo-devel cairomm-devel libjpeg-turbo-devel pango pango
 Solaris:
 ```pkgin install cairo pango pkg-config xproto renderproto kbproto xextproto```
 
-#### **Windows**:
+#### **Windows**
 [Instructions on wiki](https://github.com/Automattic/node-canvas/wiki/Installation---Windows)
 
 ### Installing (build setup)
@@ -96,6 +97,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 ## Acknowledgments
 
 * Peter Selinger for [original Potrace tool and algorithm](http://potrace.sourceforge.net/)
+* kilobyte for [A JavaScript port of Potrace](https://github.com/kilobtye/potrace)
 * Iwasawafag for [node-potrace](https://github.com/Iwasawafag/node-potrace)
 * Fuzhenn for [svg2img](https://github.com/fuzhenn/node-svg2img)
 * Creators of [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
