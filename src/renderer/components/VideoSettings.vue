@@ -131,7 +131,7 @@ and navigates to "VideoRenderer.vue" which shows the progress.
           webPreferences: {
             webSecurity: true
           },
-          show: true
+          show: false
         })
 
         backgroundWin.on('close', function() {

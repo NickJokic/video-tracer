@@ -38,7 +38,7 @@ export const VideoProcessingMixin = {
       inputNumOfStreams: 0
     }
   },
-  async mounted() {
+  mounted() {
 
     this.setFfmpegBinariesPath();
 
