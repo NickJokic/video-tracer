@@ -6,7 +6,6 @@
         <p class="web-link" @click="openWebsite(website)">(nickjokic.com)</p>
         <p class="web-link youMakeMeGreen" @click="openWebsite(github)">GitHub (repo)</p>
         <p>{{date}}</p>
-
       </div>
   </div>
 </template>
